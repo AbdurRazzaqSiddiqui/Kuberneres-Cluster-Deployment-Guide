@@ -62,8 +62,8 @@ echo "[Step 4] Installing Kubernetes packages ..."
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL [https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key](https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key) | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] [https://pkgs.k8s.io/core:/stable:/v1.35/deb/](https://pkgs.k8s.io/core:/stable:/v1.35/deb/) /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update -y
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
@@ -77,10 +77,10 @@ echo "[Step 6] Installing containerd runtime ..."
 sudo apt-get update -y
 sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL [https://download.docker.com/linux/ubuntu/gpg](https://download.docker.com/linux/ubuntu/gpg) -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
-[https://download.docker.com/linux/ubuntu](https://download.docker.com/linux/ubuntu) $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update -y
 sudo apt-get install -y containerd.io
@@ -117,8 +117,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 Setup the Calico network strictly on the master nodes to facilitate pod-to-pod communication. Execute the following to create the operator and apply custom resources with the updated CIDR matching the `kubeadm init` step:
 
 ```bash
-kubectl create -f [https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml](https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml)
-curl [https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml](https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml) -O
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/tigera-operator.yaml
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/custom-resources.yaml -O
 sed -i 's/cidr: 192\.168\.0\.0\/16/cidr: 10.10.0.0\/16/g' custom-resources.yaml
 kubectl create -f custom-resources.yaml 
 
@@ -140,7 +140,7 @@ Copy your specific token and execute it on all worker nodes to successfully join
 Deploy MetalLB on the master nodes to provide network load balancing. First, apply the native manifests:
 
 ```bash
-kubectl apply -f [https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml](https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml) 
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
 ```
 
 Create a MetalLB configuration file named `metallb-config.yaml` on the master nodes:
@@ -178,7 +178,7 @@ kubectl get l2advertisements -n metallb-system
 Install the Ingress controller on the master nodes to route external HTTP/HTTPS traffic. Deploy the `ingress-nginx` stack, which defaults to a Service of type LoadBalancer:
 
 ```bash
-kubectl apply -f [https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml](https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml) 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 ```
 
 Verify that the Ingress controller is running and has successfully acquired an external IP address:
@@ -203,7 +203,7 @@ Next, apply the Longhorn manifests exclusively on the master nodes. This command
 
 ```bash
 kubectl create namespace longhorn-system
-kubectl apply -f [https://raw.githubusercontent.com/longhorn/longhorn/v1.11.1/deploy/longhorn.yaml](https://raw.githubusercontent.com/longhorn/longhorn/v1.11.1/deploy/longhorn.yaml) 
+kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.11.1/deploy/longhorn.yaml
 ```
 
 Watch the pods initialize and come online on the master nodes:
